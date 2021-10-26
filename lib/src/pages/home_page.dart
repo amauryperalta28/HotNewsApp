@@ -22,13 +22,19 @@ class HomePage extends StatelessWidget {
           SizedBox(height: 5.0),
           Expanded(
             child: FutureBuilder<NewsResponse>(
-                future: provider.getNews(),
+                future: provider.getNewsByCategory(),
                 builder: (BuildContext context,
                     AsyncSnapshot<NewsResponse> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return Center(
+                      child: Container(
+                        height: 30,
+                        width: 30,
+                        child: CircularProgressIndicator()
+                        ),
+                    );
                   }
-                 
+
                   final articles = snapshot.data.articles;
 
                   return ListView.builder(
@@ -36,7 +42,6 @@ class HomePage extends StatelessWidget {
                         return NewsPostWidget(articles[index]);
                       },
                       itemCount: articles.length);
-
                 }),
           )
         ],
@@ -45,31 +50,39 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _CategoriesTopBar extends StatelessWidget {
+class _CategoriesTopBar extends StatefulWidget {
   const _CategoriesTopBar({
     Key key,
   }) : super(key: key);
 
   @override
+  __CategoriesTopBarState createState() => __CategoriesTopBarState();
+}
+
+class __CategoriesTopBarState extends State<_CategoriesTopBar> {
+  @override
   Widget build(BuildContext context) {
+    final newsService = Provider.of<NewsService>(context, listen: true);
+
     return Container(
       height: 50,
+      width: double.infinity,
       margin: EdgeInsets.only(top: 10.0),
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          CategoryWidget(
-            title: 'Business',
-            isSelected: true,
-          ),
-          CategoryWidget(title: 'Business'),
-          CategoryWidget(title: 'Business'),
-          CategoryWidget(title: 'Business'),
-          CategoryWidget(title: 'Business'),
-          CategoryWidget(title: 'Business'),
-          CategoryWidget(title: 'Business'),
-        ],
-      ),
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: newsService.categories.length ,
+          itemBuilder: (context, index) {
+            return new CategoryWidget(
+              title:
+                  "${newsService.categories[index][0].toUpperCase()}${newsService.categories[index].substring(1)}",
+              isSelected:
+                  newsService.selectedCategory == newsService.categories[index],
+              value: newsService.categories[index],
+            );
+ 
+     
+
+          }),
     );
   }
 }

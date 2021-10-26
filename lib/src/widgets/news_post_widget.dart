@@ -10,14 +10,22 @@ class NewsPostWidget extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
       child: Card(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: Container(
-          height: 300.0,
+          // height: 300.0,
           padding: EdgeInsets.symmetric(horizontal: 5.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _ArticleImage(article: article),
+              ClipRRect(
+                child: _ArticleImage(article: article),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
               Text(
                 article.title,
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
